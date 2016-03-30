@@ -164,6 +164,18 @@ customer.addresses # => [#<AddressValue:0x00ba9876543210 @city="Micropolis">]
 
 This is useful when data is submitted via standard HTML forms encoded with the 'application/x-www-form-urlencoded' media type (which cannot represent empty collections). To work around this, a dummy item can be added to the collection with it's key set to '-1' and it will conveniently be ignored when assigned to the value object collection.
 
+## Maintainers
+
+* Matthew Yeow (https://github.com/tbsmatt), Tinkerbox Studios (https://www.tinkerbox.com.sg/)
+
+## Contributing
+
+* Fork the repository.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so we don't break it in a future version unintentionally.
+* Commit, but do not mess with rakefile or version. (if you want to have your own version, that is fine but bump version in a commit by itself)
+* Submit a pull request. Bonus points for topic branches.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
