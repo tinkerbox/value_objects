@@ -7,11 +7,11 @@ module ValueObjects
     include ::ActiveModel::Validations
 
     def ==(other)
-      self.class == other.class && self.class.attrs.all? { |key| send(key) == other.send(key) }
+      self.class == other.class && self.class.attrs.all? { |key| public_send(key) == other.public_send(key) }
     end
 
     def to_hash
-      self.class.attrs.each_with_object({}) { |key, hash| hash[key] = send(key) }
+      self.class.attrs.each_with_object({}) { |key, hash| hash[key] = public_send(key) }
     end
 
     class << self
