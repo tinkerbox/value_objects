@@ -22,8 +22,8 @@ RSpec.describe ValueObjects::ValidValidator do
 
   end
 
-  let(:valid_value) { instance_double('ValidValue', valid?: true) }
-  let(:invalid_value) { instance_double('InvalidValue', valid?: false) }
+  let(:valid_value) { instance_double('ValidValue', invalid?: false) }
+  let(:invalid_value) { instance_double('InvalidValue', invalid?: true) }
 
   context 'with allow_nil' do
 
@@ -140,8 +140,8 @@ RSpec.describe ValueObjects::ValidValidator do
       let(:value2) { valid_value }
 
       it 'passes validation' do
-        expect(value1).to receive(:valid?).and_return(true).once
-        expect(value2).to receive(:valid?).and_return(true).once
+        expect(value1).to receive(:invalid?).and_return(false).once
+        expect(value2).to receive(:invalid?).and_return(false).once
         aggregate_failures do
           expect(record.valid?).to eq(true)
           expect(record.errors).to be_empty
@@ -152,13 +152,15 @@ RSpec.describe ValueObjects::ValidValidator do
 
     context 'and some invalid values' do
 
-      let(:values) { [value1, value2] }
-      let(:value1) { valid_value }
-      let(:value2) { invalid_value }
+      let(:values) { [value1, value2, value3] }
+      let(:value1) { invalid_value }
+      let(:value2) { valid_value }
+      let(:value3) { invalid_value }
 
       it 'fails validation' do
-        expect(value1).to receive(:valid?).and_return(true).once
-        expect(value2).to receive(:valid?).and_return(false).once
+        expect(value1).to receive(:invalid?).and_return(true).once
+        expect(value2).to receive(:invalid?).and_return(false).once
+        expect(value3).to receive(:invalid?).and_return(true).once
         aggregate_failures do
           expect(record.valid?).to eq(false)
           expect(record.errors).to include(:foo)

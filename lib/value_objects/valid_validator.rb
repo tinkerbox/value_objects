@@ -4,7 +4,7 @@ module ValueObjects
   class ValidValidator < ActiveModel::EachValidator
 
     def validate_each(record, attribute, value)
-      record.errors.add(attribute, :invalid) unless value && [*value].all?(&:valid?)
+      record.errors.add(attribute, :invalid) unless value && Array(value).count(&:invalid?) == 0
     end
 
   end
