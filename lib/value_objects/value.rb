@@ -7,11 +7,11 @@ module ValueObjects
     include ::ActiveModel::Validations
 
     def ==(other)
-      self.class == other.class && self.class.attrs.all? { |key| send(key) == other.send(key) }
+      self.class == other.class && self.class.attrs.all? { |key| public_send(key) == other.public_send(key) }
     end
 
     def to_hash
-      self.class.attrs.each_with_object({}) { |key, hash| hash[key] = send(key) }
+      self.class.attrs.each_with_object({}) { |key, hash| hash[key] = public_send(key) }
     end
 
     class << self
@@ -51,9 +51,7 @@ module ValueObjects
           # Data encoded with the 'application/x-www-form-urlencoded' media type cannot represent empty collections.
           # As a workaround, a dummy item can be added to the collection with it's key set to '-1'.
           # This dummy item will be ignored when initializing the value collection.
-          values = []
-          attributes.each { |k, v| values << @value_class.new(v) if k != '-1' }
-          values
+          attributes.map { |k, v| @value_class.new(v) if k != '-1' }.compact
         end
 
         def load(values)
