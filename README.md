@@ -164,6 +164,26 @@ customer.addresses # => [#<AddressValue:0x00ba9876543210 @city="Micropolis">]
 
 This is useful when data is submitted via standard HTML forms encoded with the 'application/x-www-form-urlencoded' media type (which cannot represent empty collections). To work around this, a dummy item can be added to the collection with it's key set to '-1' and it will conveniently be ignored when assigned to the value object collection.
 
+### Integrate with Cocoon
+
+Put this into a Rails initializer (e.g. `config/initializers/value_objects.rb`):
+
+```ruby
+ValueObjects::ActionView.integrate_with :cocoon
+```
+
+This will add the `link_to_add_nested_value` & `link_to_remove_nested_value` view helpers.
+Use them in place of Cocoon's `link_to_add_association` & `link_to_remove_association` when working with nested value objects:
+
+```ruby
+# use the attribute name (:addresses) in place of the association name
+# and supply the value object class as the next argument
+link_to_add_nested_value 'Add Address', f, :addresses, AddressValue
+
+# the `f` form builder argument is not needed
+link_to_remove_nested_value 'Remove Address'
+```
+
 ## Maintainers
 
 * Matthew Yeow (https://github.com/tbsmatt), Tinkerbox Studios (https://www.tinkerbox.com.sg/)
