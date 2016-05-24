@@ -4,8 +4,10 @@ RSpec.describe ValueObjects::ActiveRecord do
     self.verbose = false
 
     create_table :test_records do |t|
-      t.string :value
-      t.string :values
+      t.string :value, default: ''
+      t.string :value1
+      t.string :values, default: ''
+      t.string :values1
     end
 
   end
@@ -24,36 +26,81 @@ RSpec.describe ValueObjects::ActiveRecord do
 
     include ValueObjects::ActiveRecord
 
-    value_object :value, FooBarValue
-    value_object :values, FooBarValue::Collection
+    value_object :value, FooBarValue, allow_nil: true
+    value_object :value1, FooBarValue, no_validation: true
+    value_object :values, FooBarValue::Collection, allow_nil: true
+    value_object :values1, FooBarValue::Collection, no_validation: true
 
   end
 
   describe 'serialization' do
 
-    let(:value) { FooBarValue.new(foo: '123', bar: 'abc') }
-    let(:values) { [FooBarValue.new(foo: 'abc', bar: '123'), FooBarValue.new(foo: 'cba', bar: 321)] }
-    let(:record) { TestRecord.create!(value: value, values: values).reload }
+    context 'with non-nil values' do
 
-    it 'serializes the value object' do
-      aggregate_failures do
-        expect(record.read_attribute_before_type_cast(:value)).to eq('{"foo":"123","bar":"abc"}')
-        expect(record.read_attribute_before_type_cast(:values)).to eq('[{"foo":"abc","bar":"123"},{"foo":"cba","bar":321}]')
+      let(:value) { FooBarValue.new(foo: '123', bar: 'abc') }
+      let(:values) { [FooBarValue.new(foo: 'abc', bar: '123'), FooBarValue.new(foo: 'cba', bar: 321)] }
+      let(:record) { TestRecord.create!(value: value, values: values).reload }
+
+      it 'serializes the value object' do
+        aggregate_failures do
+          expect(record.read_attribute_before_type_cast(:value)).to eq('{"foo":"123","bar":"abc"}')
+          expect(record.read_attribute_before_type_cast(:values)).to eq('[{"foo":"abc","bar":"123"},{"foo":"cba","bar":321}]')
+        end
       end
+
+      it 'deserializes the value object' do
+        aggregate_failures do
+          expect(record.read_attribute(:value)).to eq(value)
+          expect(record.read_attribute(:values)).to eq(values)
+        end
+      end
+
     end
 
-    it 'deserializes the value object' do
-      aggregate_failures do
-        expect(record.read_attribute(:value)).to eq(value)
-        expect(record.read_attribute(:values)).to eq(values)
+    context 'with nil values' do
+
+      let(:value) { nil }
+      let(:values) { nil }
+      let(:record) { TestRecord.create!(value: value, values: values).reload }
+
+      it 'serializes the value object' do
+        aggregate_failures do
+          expect(record.read_attribute_before_type_cast(:value)).to eq(nil)
+          expect(record.read_attribute_before_type_cast(:values)).to eq(nil)
+        end
       end
+
+      it 'deserializes the value object' do
+        aggregate_failures do
+          expect(record.read_attribute(:value)).to eq(value)
+          expect(record.read_attribute(:values)).to eq(values)
+        end
+      end
+
+    end
+
+    context 'with blank values' do
+
+      let(:value) { FooBarValue.new }
+      let(:values) { [] }
+      let(:record) { TestRecord.new.tap { |r| r.save!(validate: false) }.reload }
+
+      it 'deserializes the value object' do
+        aggregate_failures do
+          expect(record.read_attribute_before_type_cast(:value)).to eq('')
+          expect(record.read_attribute_before_type_cast(:values)).to eq('')
+          expect(record.read_attribute(:value)).to eq(value)
+          expect(record.read_attribute(:values)).to eq(values)
+        end
+      end
+
     end
 
   end
 
   describe 'validation' do
 
-    let(:record) { TestRecord.new(value: value, values: values).tap(&:valid?) }
+    let(:record) { TestRecord.new(value: value, value1: value, values: values, values1: values).tap(&:valid?) }
 
     context 'with valid values' do
 

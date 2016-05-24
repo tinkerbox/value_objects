@@ -17,11 +17,11 @@ module ValueObjects
     class << self
 
       def load(value)
-        new(JSON.load(value)) if value
+        new(value) if value
       end
 
       def dump(value)
-        value.to_json if value
+        value.to_hash if value
       end
 
       def i18n_scope
@@ -55,11 +55,11 @@ module ValueObjects
         end
 
         def load(values)
-          values.blank? ? [] : JSON.load(values).map { |value| @value_class.new(value) } if values
+          (values.blank? ? [] : values.map { |value| @value_class.new(value) }) if values
         end
 
         def dump(values)
-          values.to_json if values
+          values.map(&:to_hash) if values
         end
 
       end

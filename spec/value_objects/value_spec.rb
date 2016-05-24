@@ -56,7 +56,7 @@ RSpec.describe ValueObjects::Value do
 
     context 'with empty value' do
 
-      let(:value) { TestValue.load('') }
+      let(:value) { TestValue.load({}) }
 
       it { expect(value).to eq(TestValue.new) }
 
@@ -64,7 +64,7 @@ RSpec.describe ValueObjects::Value do
 
     context 'with non-empty value' do
 
-      let(:value) { TestValue.load('{"foo":321,"bar":"cba"}') }
+      let(:value) { TestValue.load('foo' => 321, 'bar' => 'cba') }
 
       it { expect(value).to eq(TestValue.new(foo: 321, bar: 'cba')) }
 
@@ -86,7 +86,7 @@ RSpec.describe ValueObjects::Value do
 
       let(:value) { TestValue.dump(TestValue.new) }
 
-      it { expect(value).to eq('{"foo":null,"bar":null}') }
+      it { expect(value).to eq(foo: nil, bar: nil) }
 
     end
 
@@ -94,7 +94,7 @@ RSpec.describe ValueObjects::Value do
 
       let(:value) { TestValue.dump(TestValue.new(foo: 321, bar: 'cba')) }
 
-      it { expect(value).to eq('{"foo":321,"bar":"cba"}') }
+      it { expect(value).to eq(foo: 321, bar: 'cba') }
 
     end
 
@@ -146,7 +146,7 @@ RSpec.describe ValueObjects::Value do
 
     context 'with empty value' do
 
-      let(:value) { TestValue::Collection.load('') }
+      let(:value) { TestValue::Collection.load([]) }
 
       it { expect(value).to eq([]) }
 
@@ -154,7 +154,7 @@ RSpec.describe ValueObjects::Value do
 
     context 'with non-empty value' do
 
-      let(:value) { TestValue::Collection.load('[{"foo":321,"bar":"cba"},{"foo":"abc","bar":123}]') }
+      let(:value) { TestValue::Collection.load([{ 'foo' => 321, 'bar' => 'cba' }, { 'foo' => 'abc', 'bar' => 123 }]) }
 
       it { expect(value).to eq([TestValue.new(foo: 321, bar: 'cba'), TestValue.new(foo: 'abc', bar: 123)]) }
 
@@ -176,7 +176,7 @@ RSpec.describe ValueObjects::Value do
 
       let(:values) { TestValue::Collection.dump([]) }
 
-      it { expect(values).to eq('[]') }
+      it { expect(values).to eq([]) }
 
     end
 
@@ -184,7 +184,7 @@ RSpec.describe ValueObjects::Value do
 
       let(:values) { TestValue::Collection.dump([TestValue.new(foo: 123, bar: 'abc'), TestValue.new(foo: 'cba', bar: 321)]) }
 
-      it { expect(values).to eq('[{"foo":123,"bar":"abc"},{"foo":"cba","bar":321}]') }
+      it { expect(values).to eq([{ foo: 123, bar: 'abc' }, { foo: 'cba', bar: 321 }]) }
 
     end
 

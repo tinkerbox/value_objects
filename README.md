@@ -55,7 +55,7 @@ address.errors.to_h # => {}
 
 ### Serialization with ActiveRecord
 
-The value object class can be used as the coder for the `serialize` method:
+For columns of `json` type, the value object class can be used as the coder for the `serialize` method:
 
 ```ruby
 class Customer < ActiveRecord::Base
@@ -67,6 +67,14 @@ customer.home_address = AddressValue.new(street: '123 Big Street', postcode: '12
 customer.save
 customer.reload
 customer.home_address # => #<AddressValue:0x00ba9876543210 @street="123 Big Street", @postcode="12345", @city="Metropolis">
+```
+
+For columns of `string` or `text` type, wrap the value object class in a `JsonCoder`:
+
+```ruby
+class Customer < ActiveRecord::Base
+  serialize :home_address, ValueObjects::ActiveRecord::JsonCoder.new(AddressValue)
+end
 ```
 
 ### Validation with ActiveRecord
@@ -111,6 +119,26 @@ customer.home_address # => #<AddressValue:0x00ba9876503210 @street="321 Main St"
 ```
 
 This is functionally similar to what `accepts_nested_attributes_for` does for associations.
+
+Also, `value_object` will use the `JsonCoder` automatically if it detects that the column type is `string` or `text`.
+
+Additional options may be passed in to customize validation:
+
+```ruby
+class Customer < ActiveRecord::Base
+  include ValueObjects::ActiveRecord
+  value_object :home_address, AddressValue, allow_nil: true
+end
+```
+
+Or, to skip validation entirely:
+
+```ruby
+class Customer < ActiveRecord::Base
+  include ValueObjects::ActiveRecord
+  value_object :home_address, AddressValue, no_validation: true
+end
+```
 
 ### Value object collections
 
