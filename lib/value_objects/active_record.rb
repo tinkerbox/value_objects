@@ -8,8 +8,18 @@ module ValueObjects
     end
 
     def value_object(attribute, value_class, options = {})
+      type =
+        begin
+          column_for_attribute(attribute)&.type
+        rescue ::ActiveRecord::StatementInvalid
+          # This can happen if `column_for_attribute` is called but the database table does not exist
+          # as will be the case when migrations are run and the model class is loaded by initializers
+          # before the table is created.
+          # This is a workaround to prevent such migrations from failing.
+          nil
+        end
       coder =
-        case column_for_attribute(attribute).type
+        case type
         when :string, :text
           JsonCoder.new(value_class)
         else
