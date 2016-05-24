@@ -5,7 +5,9 @@ RSpec.describe ValueObjects::ActiveRecord do
 
     create_table :test_records do |t|
       t.string :value, default: ''
+      t.string :value1
       t.string :values, default: ''
+      t.string :values1
     end
 
   end
@@ -25,7 +27,9 @@ RSpec.describe ValueObjects::ActiveRecord do
     include ValueObjects::ActiveRecord
 
     value_object :value, FooBarValue, allow_nil: true
+    value_object :value1, FooBarValue, no_validation: true
     value_object :values, FooBarValue::Collection, allow_nil: true
+    value_object :values1, FooBarValue::Collection, no_validation: true
 
   end
 
@@ -96,7 +100,7 @@ RSpec.describe ValueObjects::ActiveRecord do
 
   describe 'validation' do
 
-    let(:record) { TestRecord.new(value: value, values: values).tap(&:valid?) }
+    let(:record) { TestRecord.new(value: value, value1: value, values: values, values1: values).tap(&:valid?) }
 
     context 'with valid values' do
 
