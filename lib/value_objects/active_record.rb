@@ -7,7 +7,7 @@ module ValueObjects
       base.extend self
     end
 
-    def value_object(attribute, value_class)
+    def value_object(attribute, value_class, options = {})
       coder =
         case column_for_attribute(attribute).type
         when :string, :text
@@ -16,7 +16,7 @@ module ValueObjects
           value_class
         end
       serialize(attribute, coder)
-      validates_with(::ValueObjects::ValidValidator, attributes: [attribute])
+      validates_with(::ValueObjects::ValidValidator, options.merge(attributes: [attribute]))
       setter = :"#{attribute}="
       define_method("#{attribute}_attributes=") do |attributes|
         send(setter, value_class.new(attributes))
