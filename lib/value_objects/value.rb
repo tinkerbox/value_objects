@@ -4,7 +4,6 @@ module ValueObjects
   class Value
 
     include ::ActiveModel::Model
-    include ::ActiveModel::Validations
 
     def ==(other)
       self.class == other.class && self.class.attrs.all? { |key| public_send(key) == other.public_send(key) }

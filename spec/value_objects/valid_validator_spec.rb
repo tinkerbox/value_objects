@@ -3,7 +3,6 @@ RSpec.describe ValueObjects::ValidValidator do
   class NilAllowedRecord
 
     include ActiveModel::Model
-    include ActiveModel::Validations
 
     attr_accessor :foo
 
@@ -14,7 +13,6 @@ RSpec.describe ValueObjects::ValidValidator do
   class NilForbiddenRecord
 
     include ActiveModel::Model
-    include ActiveModel::Validations
 
     attr_accessor :foo
 
