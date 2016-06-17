@@ -22,10 +22,10 @@ Or install it yourself as:
 
 ### Create the value object class
 
-The value object class inherits from `ValueObjects::Value`, and attributes are defined with `attr_accessor`:
+The value object class inherits from `ValueObjects::Base`, and attributes are defined with `attr_accessor`:
 
 ```ruby
-class AddressValue < ValueObjects::Value
+class AddressValue < ValueObjects::Base
   attr_accessor :street, :postcode, :city
 end
 
@@ -40,7 +40,7 @@ address.to_hash # => {:street=>"321 Main St", :postcode=>"12345", :city=>"Metrop
 Validations can be added using the DSL from `ActiveModel::Validations`:
 
 ```ruby
-class AddressValue < ValueObjects::Value
+class AddressValue < ValueObjects::Base
   attr_accessor :street, :postcode, :city
   validates :postcode, presence: true
 end
@@ -144,10 +144,10 @@ end
 
 Serialization and validation of value object collections are also supported.
 
-First, create a nested `Collection` class that inherits from `ValueObjects::Value::Collection`:
+First, create a nested `Collection` class that inherits from `ValueObjects::Base::Collection`:
 
 ```ruby
-class AddressValue < ValueObjects::Value
+class AddressValue < ValueObjects::Base
   attr_accessor :street, :postcode, :city
   validates :postcode, presence: true
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module ValueObjects
 
-  class Value
+  class Base
 
     include ::ActiveModel::Model
 

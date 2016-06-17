@@ -47,7 +47,7 @@ RSpec.describe ValueObjects::ActionView::Cocoon do
     let(:name) { nil }
     let(:form) { double(object_name: 'form[test_record]') }
     let(:attribute) { :test_values }
-    let(:value_class) { ValueObjects::Value }
+    let(:value_class) { ValueObjects::Base }
     let(:options) { nil }
     let(:block) { nil }
     let(:input_name) { "#{form.object_name}[#{attribute}_attributes][-1][_]" }
@@ -101,7 +101,7 @@ RSpec.describe ValueObjects::ActionView::Cocoon do
       let(:wrapper) do
         double.tap do |d|
           expect(d).to receive(:call) do |obj|
-            expect(obj).to be_a(ValueObjects::Value)
+            expect(obj).to be_a(ValueObjects::Base)
           end.once
         end
       end

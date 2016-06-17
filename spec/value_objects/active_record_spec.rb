@@ -12,7 +12,7 @@ RSpec.describe ValueObjects::ActiveRecord do
 
   end
 
-  class FooBarValue < ValueObjects::Value
+  class FooBarValue < ValueObjects::Base
 
     attr_accessor :foo, :bar
     validates :foo, presence: true

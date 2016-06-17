@@ -1,6 +1,6 @@
-RSpec.describe ValueObjects::Value do
+RSpec.describe ValueObjects::Base do
 
-  class TestValue < ValueObjects::Value
+  class TestValue < ValueObjects::Base
 
     attr_accessor :foo, :bar
     validates :foo, presence: true
@@ -10,7 +10,7 @@ RSpec.describe ValueObjects::Value do
 
   end
 
-  class OtherTestValue < ValueObjects::Value
+  class OtherTestValue < ValueObjects::Base
 
     attr_accessor :foo, :bar
     validates :foo, presence: true
